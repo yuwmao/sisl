@@ -105,6 +105,7 @@ private:
         auto base_raw = m_base_obj.get();
         std::vector< DS* > old_ptrs;
         old_ptrs.reserve(128);
+        auto start = std::chrono::high_resolution_clock::now();
 
         m_buffer.access_all_threads([&old_ptrs](sisl::urcu_scoped_ptr< DS, Args... >* const ptr,
                                                 [[maybe_unused]] const bool is_thread_running,
@@ -114,7 +115,13 @@ private:
             return true;
         });
 
+        auto end1 = std::chrono::high_resolution_clock::now();
+        std::cout << "Time taken to rotate all thread buffers: " << std::chrono::duration_cast< std::chrono::nanoseconds >(end1 - start).count() << " ns\n";
+
         synchronize_rcu();
+
+        auto end2 = std::chrono::high_resolution_clock::now();
+        std::cout << "Time taken to synchronize_rcu: " << std::chrono::duration_cast< std::chrono::nanoseconds >(end2 - end1).count() << " ns\n";
 
         if (do_merge) {
             for (auto& old_ptr : old_ptrs) {
@@ -123,6 +130,9 @@ private:
             }
             old_ptrs.clear();
         }
+        auto end3 = std::chrono::high_resolution_clock::now();
+        std::cout << "Time taken to merge: " << std::chrono::duration_cast< std::chrono::nanoseconds >(end3 - end2).count() << " ns\n";
+
         return old_ptrs;
     }
 

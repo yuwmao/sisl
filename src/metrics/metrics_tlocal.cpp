@@ -46,7 +46,7 @@ void PerThreadMetrics::merge(PerThreadMetrics* const a, PerThreadMetrics* const 
         printf("ThreadId=%08lux: Merging SafeMetrics a=%p, b=%p, a->m_ncntrs=%u, b->m_ncntrs=%u, a->m_nhists=%u, b->m_nhists=%u\n",
                pthread_self(), a, b, a->m_ncntrs, b->m_ncntrs, a->m_nhists, b->m_nhists);
 #endif
-
+    std::cout << "ThreadId=" << pthread_self() << std::endl;
     for (decltype(m_ncntrs) i{0}; i < a->m_ncntrs; ++i) {
         a->m_counters[i].merge(b->m_counters[i]);
     }

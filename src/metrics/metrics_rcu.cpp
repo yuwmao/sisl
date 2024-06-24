@@ -56,16 +56,22 @@ void WisrBufferMetricsGroup::gather_result(bool need_latest, const counter_gathe
     } else {
         tmetrics = m_metrics->delayed();
     }
+    //print log
+    std::cout << "Gathering metrics for group: " << m_static_info->m_grp_name << std::endl;
+    std::cout << "Gathering metrics for instance: " << m_inst_name << std::endl;
 
     for (size_t i{0}; i < num_counters(); ++i) {
+        std::cout << "Gathering counter value for index: " << i << std::endl;
         counter_cb(i, tmetrics->get_counter(i));
     }
 
     for (size_t i{0}; i < num_gauges(); ++i) {
+        std::cout << "Gathering gauge value for index: " << i << std::endl;
         gauge_cb(i, m_gauge_values[i]);
     }
 
     for (size_t i{0}; i < num_histograms(); ++i) {
+        std::cout << "Gathering histogram value for index: " << i << std::endl;
         histogram_cb(i, tmetrics->get_histogram(i));
     }
 }
